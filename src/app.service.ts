@@ -1,10 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkSpace } from './entities/workspace.entity';
-import { Booking } from './entities/booking.entity';
 import { Repository } from 'typeorm';
 import { Session } from './entities/sessions.entity';
-import { query } from 'express';
 
 @Injectable()
 export class AppService {
