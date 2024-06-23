@@ -9,7 +9,7 @@ export class Booking {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Session)
+  @ManyToOne(() => Session, session => session.bookings)
   @JoinColumn({ name: 'id_session' })
   session: Session;
 
@@ -26,5 +26,4 @@ export class Booking {
 
   @Column()
   price: number;
-
 }
