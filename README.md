@@ -26,6 +26,12 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Documentattion
+
+API designed for a coworking system based on a HU and this data schema
+
+<img src="img/modelo.PNG"></img>
+
 ## Installation
 
 ```bash
