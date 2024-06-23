@@ -15,16 +15,18 @@ export class AppService {
       async getAvailableWorkSpaces( roomId: number, sessionId: number ): Promise<WorkSpace[]> {
         try {
 
-            const query = await this.workSpaceRepository
-                .createQueryBuilder('workSpace')
+            const query = this.workSpaceRepository.createQueryBuilder('workSpace')
                 .leftJoinAndSelect('workSpace.bookings', 'booking', 'booking.id_session = :sessionId', { sessionId })
                 .where('workSpace.room.id = :roomId', { roomId })
                 .andWhere('booking.id IS NULL')
-                .getMany();
+                
+            const workSpace = await query.getMany();
 
-            if ( !query ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
+            if ( !workSpace ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
 
-            return query
+            if ( workSpace.length == 0 ) throw new HttpException('This list is empty', 200)
+
+            return workSpace
             
         } catch (err) {
             throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -34,15 +36,17 @@ export class AppService {
       async getOccupiedWorkSpaces( roomId: number, sessionId: number ): Promise<WorkSpace[]> {
         try {
             
-            const query = await this.workSpaceRepository
-                .createQueryBuilder('workSpace')
+            const query = this.workSpaceRepository.createQueryBuilder('workSpace')
                 .innerJoin('workSpace.bookings', 'booking', 'booking.id_session = :sessionId', { sessionId })
                 .where('workSpace.room.id = :roomId', { roomId })
-                .getMany();
+                
+            const workSpace = await query.getMany();
 
-            if ( !query ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
+            if ( !workSpace ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
 
-            return query;
+            if ( workSpace.length == 0 ) throw new HttpException('This list is empty', 200)
+
+            return workSpace;
 
         } catch (err) {
             throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -51,36 +55,39 @@ export class AppService {
     
       async getSessionsOrderedByMostOccupied(): Promise<Session[]> {
         try {
-        
-            const query = await this.sessionRepository
-                .createQueryBuilder('session')
-                .leftJoin('session.bookings', 'booking')
-                .groupBy('session.id')
-                .orderBy('COUNT(booking.id)', 'DESC')
-                .getMany();
-        
-            if ( !query ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
+          const query = this.sessionRepository.createQueryBuilder('session')
+            .leftJoin('session.bookings', 'booking')
+            .groupBy('session.id')
+            .orderBy('COUNT(booking.id)', 'DESC');
+      
+          const sessions = await query.getMany();
+      
+          if (!sessions) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST);
+      
+          if ( sessions.length == 0 ) throw new HttpException('This list is empty', 200)
 
-            return query
+          return sessions;
 
         } catch (err) {
-            throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR)
+          throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
     
       async getSessionsOrderedByMostAvailable(): Promise<Session[]> {
         try {
 
-            const query = await this.sessionRepository
-                .createQueryBuilder('session')
+            const query = this.sessionRepository.createQueryBuilder('session')
                 .leftJoin('session.bookings', 'booking')
                 .groupBy('session.id')
                 .orderBy('COUNT(booking.id)', 'ASC')
-                .getMany();
+            
+            const session = await query.getMany()
 
-            if ( !query ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
+            if ( !session ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
 
-            return query
+            if ( session.length == 0 ) throw new HttpException('This list is empty', 200)
+              
+            return session
             
         } catch (err) {
             throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -90,14 +97,16 @@ export class AppService {
       async getWorkSpacesAssignedToUser( userId: number ): Promise<WorkSpace[]> {
         try {
          
-            const query = await this.workSpaceRepository
-                .createQueryBuilder('workSpace')
+            const query = this.workSpaceRepository.createQueryBuilder('workSpace')
                 .innerJoin('workSpace.bookings', 'booking', 'booking.cc_user = :userId', { userId })
-                .getMany();
+                
+            const workSpace = await query.getMany();
 
-            if ( !query ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
+            if ( !workSpace ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
 
-            return query
+            if ( workSpace.length == 0 ) throw new HttpException('This list is empty', 200)
+
+            return workSpace
             
         } catch (err) {
             throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR)
@@ -107,14 +116,16 @@ export class AppService {
       async getWorkSpacesAssignedToSession(sessionId: number): Promise<WorkSpace[]> {
         try {
          
-            const query = await this.workSpaceRepository
-                .createQueryBuilder('workSpace')
+            const query = this.workSpaceRepository.createQueryBuilder('workSpace')
                 .innerJoin('workSpace.bookings', 'booking', 'booking.id_session = :sessionId', { sessionId })
-                .getMany();
+                
+            const workSpace = await query.getMany();
 
-            if ( !query ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
+            if ( !workSpace ) throw new HttpException('Invalid query', HttpStatus.BAD_REQUEST)
 
-            return query
+            if ( workSpace.length == 0 ) throw new HttpException('This list is empty', 200)
+
+            return workSpace
             
         } catch (err) {
             throw new HttpException(`Ups... ${err}`, HttpStatus.INTERNAL_SERVER_ERROR)

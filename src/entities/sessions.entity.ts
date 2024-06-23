@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Booking } from "./booking.entity"; // Asegúrate de importar la entidad Booking correctamente
 
 @Entity({ schema: 'coworking', name: 'sessions' })
 export class Session {
@@ -17,5 +18,7 @@ export class Session {
 
   @Column()
   end_time: Date;
-  
+
+  @OneToMany(() => Booking, booking => booking.session)
+  bookings: Booking[];
 }

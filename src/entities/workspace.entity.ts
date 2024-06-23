@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Room } from "./rooms.entity";
+import { Booking } from "./booking.entity";
 
 @Entity({ schema: 'coworking', name: 'work_space' })
 export class WorkSpace {
@@ -19,5 +20,8 @@ export class WorkSpace {
 
   @Column()
   chair_number: number;
+
+  @OneToMany(() => Booking, booking => booking.workSpace)
+  bookings: Booking[];
 
 }
